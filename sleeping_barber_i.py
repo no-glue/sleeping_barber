@@ -42,9 +42,9 @@ class BarberShop(threading.Thread):
 class Customer(object):
   def __init__(self, name):
     self.name = name
-class Barber(threading.Event):
+class Barber(threading._Event):
   def __init__(self):
-    threading.Event.__init__(self)
+    threading._Event.__init__(self)
   def sleep(self):
     self.wait()
   def wakeUp(self):
@@ -75,7 +75,5 @@ def BarberShopRun():
     Customer('Heidrun')
   ], threading.Lock())
   shop.run()
-  time.sleep(100)
-  BarberShop.running = False
 if __name__ == "__main__":
   BarberShopRun()
