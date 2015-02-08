@@ -11,8 +11,8 @@ class BarberShop(threading.Thread):
     self.customers = customers
     self.lock = lock
     self.waitingCustomers = []
-  def start(self):
-    while self.running:
+  def run(self):
+    while len(self.customers) > 0:
       self.enterBarberShop()
       self.barberGoToWork()
   def enterBarberShop(self):
@@ -52,7 +52,7 @@ class Barber(threading._Event):
   def cutHair(self, customer):
     self.clear()
     print "%s is having a haircut" % customer.name
-    time.sleep(random.uniform(1, 10))
+    time.sleep(random.uniform(1, 3))
     print "%s is done" % customer.name
 def BarberShopRun():
   shop = BarberShop(Barber(), 3, [
@@ -74,6 +74,7 @@ def BarberShopRun():
     Customer('Kristrun'),
     Customer('Heidrun')
   ], threading.Lock())
-  shop.run()
+  shop.start()
+  BarberShop.running = False
 if __name__ == "__main__":
   BarberShopRun()
