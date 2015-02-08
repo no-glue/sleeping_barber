@@ -1,9 +1,9 @@
 import threading
 import time
 import random
+# inter process communication
 
 class BarberShop(threading.Thread):
-  running = True
   def __init__(self, barber, numberOfSeats, customers, lock):
     threading.Thread.__init__(self)
     self.barber = barber
