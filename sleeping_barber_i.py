@@ -4,23 +4,20 @@ import random
 # inter process communication
 
 class BarberShop(threading.Thread):
-  def __init__(self, barber, numberOfSeats, customers, lock):
+  running = True
+  def __init__(self, barber, numberOfSeats, lock):
     threading.Thread.__init__(self)
     self.barber = barber
     self.numberOfSeats = numberOfSeats
-    self.customers = customers
     self.lock = lock
     self.waitingCustomers = []
   def run(self):
-    while len(self.customers) > 0:
-      self.enterBarberShop()
+    while self.running:
       self.barberGoToWork()
-  def enterBarberShop(self):
+  def enterBarberShop(self, customer):
     self.lock.acquire()
-    if len(self.customers) <= 0: return
-    customer = self.customers.pop()
     print "%s entered the shop looking for a seat" % customer.name
-    if len(self.waitingCustomers) == self.numberOfSeats:
+    if len(self.waitingCustomers) >= self.numberOfSeats:
       print "The shop is full. %s is walking away" % customer.name
     else:
       self.waitingCustomers.append(customer)
@@ -55,7 +52,7 @@ class Barber(threading._Event):
     time.sleep(random.uniform(1, 3))
     print "%s is done" % customer.name
 def BarberShopRun():
-  shop = BarberShop(Barber(), 3, [
+  customers = [
     Customer('Bragi'),
     Customer('Auja'),
     Customer('Iris'),
@@ -73,8 +70,12 @@ def BarberShopRun():
     Customer('Tomas'),
     Customer('Kristrun'),
     Customer('Heidrun')
-  ], threading.Lock())
+  ]
+  shop = BarberShop(Barber(), 3, threading.Lock())
   shop.start()
+  for customer in customers: 
+    shop.enterBarberShop(customer)
+    time.sleep(random.uniform(1, 3))
   BarberShop.running = False
 if __name__ == "__main__":
   BarberShopRun()
